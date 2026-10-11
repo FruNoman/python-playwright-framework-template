@@ -1,0 +1,27 @@
+{
+  "extraKnownMarketplaces": {
+    "qa-automation-toolkit": {
+      "source": {
+        "source": "github",
+        "repo": "FruNoman/qa-automation-toolkit"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "qa-core@qa-automation-toolkit": true,
+    "qa-python@qa-automation-toolkit": true
+  },
+  "permissions": {
+    "allow": [
+      "mcp__plugin_qa-core_playwright__*",
+      "mcp__plugin_qa-core_playwright__browser_run_code_unsafe",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(uv run playwright:*)",
+      "Bash(uv sync:*)",
+      "Bash(make check:*)",
+      "Bash(make test:*)",
+      "Bash(./scripts/walk-session.sh:*)"
+    ]
+  }
+}

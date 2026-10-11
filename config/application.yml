@@ -1,0 +1,24 @@
+# Defaults for every run. Layered, later wins:
+#   config/application.yml → config/application-ci.yml (CI=true) → resources/env/<env>.yml →
+#   environment variables (TEST_ENV, BASE_URL, RUNNER, BROWSER, HEADLESS, PLAYWRIGHT_SERVER_URL,
+#   TIMEOUT) → pytest options (--env, --runner; pytest-playwright's --browser, --headed).
+env: dev            # which resources/env/<name>.yml — the app's deployment
+runner: local       # local (browsers installed here: `uv run playwright install chromium`)
+                    # | server (a `playwright run-server`: docker-compose.playwright.yml)
+browser:
+  name: chromium    # chromium | firefox | webkit
+  # the same switch for local and server browsers; an env file may override it. Watch one test:
+  # --headed (and -n 0).
+  headless: true
+  viewport: [1440, 900]
+server:
+  url: ws://localhost:3000/   # client and server versions must match (pyproject ↔ compose)
+timeouts:
+  action: 10        # seconds a click/fill/expect gets (Playwright waits for actionability itself)
+  navigation: 30
+artifacts:
+  dir: build/reports/failures   # one folder per failed test: screenshot, page.html, console, info
+logs:
+  dir: build/logs               # run.log + one log per test (tests/<test>.log)
+data:
+  dir: resources/data           # test data; resources/data/<env>/ wins over it

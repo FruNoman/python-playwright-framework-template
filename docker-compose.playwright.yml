@@ -1,0 +1,17 @@
+# Browsers in a container instead of on this machine — Playwright's answer to a Grid:
+#   docker compose -f docker-compose.playwright.yml up -d
+#   RUNNER=server uv run pytest -n 4      (PLAYWRIGHT_SERVER_URL, default ws://localhost:3000/)
+# One server serves every worker (each connects and gets its own browser). The tag and the npx
+# version = `playwright` in pyproject.toml: client and server must match.
+# An app on this machine's localhost is host.docker.internal from inside the container.
+services:
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.63.0-noble
+    command: npx -y playwright@1.63.0 run-server --port 3000 --host 0.0.0.0
+    init: true
+    # run-server 1.63.0 exits on a CDP reply for a crashed page (lab8 2026-10-09) — come back
+    # instead of failing every later run
+    restart: unless-stopped
+    ipc: host
+    ports:
+      - "${PLAYWRIGHT_PORT:-3000}:3000"
