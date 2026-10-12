@@ -29,8 +29,9 @@ m=re.search(r"^\s*"+sys.argv[2]+r":\s*(\S+)",t,re.M)
 print(m.group(1) if m else "")' "$ENV_FILE" "$1"; }
 field() { python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))[sys.argv[2]][sys.argv[3]])' "$DATA" "$USER_KEY" "$1"; }
 BASE=$(yml url); BASE=${BASE%/}
-# the session cookie's name (auth.session-cookie in the env file once the login is written)
-COOKIE=$(yml session-cookie)
+# ONBOARD: the session cookie's name — here, not in the env file: Settings refuses unknown keys
+# there (extra="forbid"), so an `auth:` block would fail every run (lab10 2026-10-12)
+COOKIE=SESSION
 JAR=$(mktemp); trap 'rm -f "$JAR"' EXIT
 
 echo "walk-session.sh: the app's login isn't written yet (ONBOARD)" >&2
