@@ -48,7 +48,7 @@ uv run pytest --browser firefox -n 4          # another browser (uv run playwrig
 docker compose -f docker-compose.playwright.yml up -d && RUNNER=server uv run pytest -n 4
 docker compose -f docker-compose.playwright.yml -f docker-compose.ci.yml up --build \
   --abort-on-container-exit --exit-code-from tests                        # exactly what CI runs
-make check                                    # ruff + pyright
+make check                                    # ruff + pyright + scripts/audit.py (the framework's own rules)
 make hooks                                    # once per clone: style gate before every commit (.githooks/pre-commit)
 ```
 
