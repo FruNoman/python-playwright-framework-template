@@ -36,6 +36,7 @@ element library and no waits layer: Playwright's locators and auto-waiting are t
 | `autotests/api/` | `ApiClient` (requests + pydantic DTOs, `as_user`), `forms.py` for server-rendered forms |
 | `autotests/testdata/` | functions building what tests create through the API; the fixture that calls one yields and deletes |
 | `autotests/support/` | failure artifacts, the shared-state lock |
+| `autotests/known_bug.py` | `with known_bug("<KEY>: <why>"):` — a known bug scoped to the one check it breaks: XFAIL while it reproduces, red once it doesn't (strict); whole-test `xfail(strict=True)` only when the bug blocks the test's start |
 | `autotests/plugin.py` | the pytest plugin: options, settings, user, authenticate, data/texts/api fixtures, the rarer shared state collected first, logs per test, artifacts on failure and xfail (screenshot in the HTML report) |
 
 ## Run
