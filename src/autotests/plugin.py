@@ -141,7 +141,7 @@ def authenticate() -> Callable[[BrowserContext, User], None]:
     """ONBOARD: log the context in as the user without the login form — its session cookie
     (`context.add_cookies`) or a saved storage state (login-strategies); until then tests start
     logged out."""
-    return lambda context, user: None
+    return lambda _context, _user: None
 
 
 @pytest.fixture(scope="session")

@@ -49,6 +49,7 @@ docker compose -f docker-compose.playwright.yml up -d && RUNNER=server uv run py
 docker compose -f docker-compose.playwright.yml -f docker-compose.ci.yml up --build \
   --abort-on-container-exit --exit-code-from tests                        # exactly what CI runs
 make check                                    # ruff + pyright
+make hooks                                    # once per clone: style gate before every commit (.githooks/pre-commit)
 ```
 
 A failed test leaves `build/reports/failures/<test>/` (screenshot, page.html, console, info) and

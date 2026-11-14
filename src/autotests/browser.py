@@ -5,7 +5,7 @@ cookies, storage or pages leak between tests, at a fraction of a new browser's c
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterator
+from collections.abc import Callable
 from typing import Any
 
 import pytest
@@ -49,7 +49,7 @@ def page(
     settings: Settings,
     user: User,
     authenticate: Callable[[BrowserContext, User], None],
-) -> Iterator[Page]:
+) -> Page:
     """This test's page, on its fresh context, logged in as `user`; its console kept for the
     failure artifacts."""
     context.set_default_timeout(settings.timeouts.action * 1000)
@@ -64,4 +64,4 @@ def page(
     page.on("console", keep)
     page.on("pageerror", lambda error: console.append(f"pageerror {error}"))
     request.node._autotests_page = (page, console)
-    yield page
+    return page

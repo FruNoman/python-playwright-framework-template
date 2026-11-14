@@ -1,5 +1,5 @@
 # The commands a person and CI run. Everything else: uv run pytest … (see README).
-.PHONY: test check format browsers
+.PHONY: test check format hooks browsers
 test:  ## all tests, parallel
 	uv run pytest -n $${TESTS_THREADS:-4}
 check: ## style and types — what CI checks
@@ -8,3 +8,5 @@ format:
 	uv run ruff format . && uv run ruff check --fix .
 browsers: ## the browsers for local runs (once per Playwright version)
 	uv run playwright install chromium
+hooks: ## the style gate before every commit (.githooks/pre-commit)
+	git config core.hooksPath .githooks
