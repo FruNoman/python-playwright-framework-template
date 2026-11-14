@@ -11,11 +11,12 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 import pytest
+import yaml
 from pydantic import SecretStr
 from pytest_check import check
 
 from autotests.api.client import ApiClient
-from autotests.config.settings import load_settings
+from autotests.config.settings import ROOT, load_settings
 from autotests.data.loader import TestDataLoader
 from autotests.data.models import TestData
 from autotests.data.placeholders import process
@@ -25,6 +26,7 @@ from autotests.support import shared_state
 
 
 def test_settings_layers_env_vars_and_options() -> None:
+    ci_layer = yaml.safe_load((ROOT / "config" / "application-ci.yml").read_text())
     from_env = load_settings(environ={"BASE_URL": "https://stage.example/", "HEADLESS": "false"})
     from_cli = load_settings({"browser.name": "firefox", "runner": "server"}, environ={})
 
@@ -35,7 +37,9 @@ def test_settings_layers_env_vars_and_options() -> None:
     with check:
         assert (from_cli.browser.name, from_cli.runner) == ("firefox", "server"), "CLI options"
     with check:
-        assert load_settings(environ={"CI": "true"}).timeouts.action == 20, "the CI layer"
+        assert (
+            load_settings(environ={"CI": "true"}).timeouts.action == ci_layer["timeouts"]["action"]
+        ), "the CI layer"
 
 
 def test_an_unknown_environment_fails_fast() -> None:
