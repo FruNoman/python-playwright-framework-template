@@ -3,7 +3,7 @@
 test:  ## all tests, parallel
 	uv run pytest -n $${TESTS_THREADS:-4}
 check: ## style and types — what CI checks
-	uv run ruff check . && uv run ruff format --check . && uv run pyright
+	uv run ruff check . && uv run ruff format --check . && uv run pyright && uv run python scripts/audit.py
 format:
 	uv run ruff format . && uv run ruff check --fix .
 browsers: ## the browsers for local runs (once per Playwright version)
