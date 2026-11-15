@@ -32,7 +32,7 @@ element library and no waits layer: Playwright's locators and auto-waiting are t
 | `autotests/pages/base_page.py` | `BasePage(page, settings)`: `path`, `ready()`, `open()`, `wait_loaded()` |
 | `autotests/components/` | `Table` — widgets one locator call doesn't cover; no wrapper per control |
 | `autotests/config/` | settings in layers: `config/application.yml` → `application-ci.yml` (CI=true) → `resources/env/<env>.yml` → env vars → options |
-| `autotests/data/` | `TestDataLoader` (JSON variants, per-env files, placeholders `{{uniqueTimestamp}}`, `{{inDays:3}}` ISO / `{{inDays:3:%m/%d/%Y}}`, Faker…), `TestData` models (pydantic), `data_fixture`, typed texts (`UiTexts`, `texts_fixture`) |
+| `autotests/data/` | `TestDataLoader` (JSON variants, per-env files, placeholders `{{uniqueTimestamp}}`, `{{inDays:3}}` ISO / `{{inDays:3:%m/%d/%Y}}`, Faker…), `TestData` models (pydantic), `data_fixture`, typed texts (`UiTexts`, `texts_fixture`; `ui-texts.json` and/or one `ui-texts/<area>.json` per area, merged) |
 | `autotests/api/` | `ApiClient` (requests + pydantic DTOs, `as_user`), `forms.py` for server-rendered forms |
 | `autotests/testdata/` | functions building what tests create through the API; the fixture that calls one yields and deletes |
 | `autotests/support/` | failure artifacts, the shared-state lock |
