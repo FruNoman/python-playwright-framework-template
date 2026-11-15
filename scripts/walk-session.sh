@@ -30,7 +30,7 @@ print(m.group(1) if m else "")' "$ENV_FILE" "$1"; }
 field() { python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))[sys.argv[2]][sys.argv[3]])' "$DATA" "$USER_KEY" "$1"; }
 BASE=$(yml url); BASE=${BASE%/}
 # ONBOARD: the session cookie's name — here, not in the env file: Settings refuses unknown keys
-# there (extra="forbid"), so an `auth:` block would fail every run (lab10 2026-10-12)
+# there (extra="forbid"), so an `auth:` block would fail every run
 COOKIE=SESSION
 JAR=$(mktemp); trap 'rm -f "$JAR"' EXIT
 

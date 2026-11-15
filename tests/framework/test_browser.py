@@ -14,7 +14,7 @@ from autotests.support import artifacts
 def test_a_test_starts_with_a_fresh_context(page: Page) -> None:
     page.goto("about:blank")
     # only what this test's `authenticate` put there — never the cookie the test before left
-    # (a check for "no cookies at all" breaks as soon as the login is injected; lab10 2026-10-12)
+    # (a check for "no cookies at all" breaks as soon as the login is injected)
     leftover = [c for c in page.context.cookies() if c.get("name") == "left"]
 
     page.context.add_cookies([{"name": "left", "value": "behind", "url": "https://example.org"}])
