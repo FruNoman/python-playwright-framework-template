@@ -32,10 +32,12 @@ element library and no waits layer: Playwright's locators and auto-waiting are t
 | `autotests/pages/base_page.py` | `BasePage(page, settings)`: `path`, `ready()`, `open()`, `wait_loaded()` |
 | `autotests/components/` | `Table` — widgets one locator call doesn't cover; no wrapper per control |
 | `autotests/config/` | settings in layers: `config/application.yml` → `application-ci.yml` (CI=true) → `resources/env/<env>.yml` → env vars → options |
-| `autotests/data/` | `TestDataLoader` (JSON variants, per-env files, placeholders `{{uniqueTimestamp}}`, `{{inDays:3}}` ISO / `{{inDays:3:%m/%d/%Y}}`, Faker…), `TestData` models (pydantic), `data_fixture`, typed texts (`UiTexts`, `texts_fixture`) |
+| `autotests/data/` | `TestDataLoader` (JSON variants, per-env files, placeholders `{{uniqueTimestamp}}`, `{{inDays:3}}` ISO / `{{inDays:3:%m/%d/%Y}}`, Faker…), `TestData` models (pydantic), `data_fixture`, typed texts (`UiTexts`, `texts_fixture`; `ui-texts.json` and/or one `ui-texts/<area>.json` per area, merged) |
 | `autotests/api/` | `ApiClient` (requests + pydantic DTOs, `as_user`), `forms.py` for server-rendered forms |
 | `autotests/testdata/` | functions building what tests create through the API; the fixture that calls one yields and deletes |
 | `autotests/support/` | failure artifacts, the shared-state lock |
+| `autotests/known_bug.py` | `with known_bug("<KEY>: <why>"):` — a known bug scoped to the one check it breaks: XFAIL while it reproduces, red once it doesn't (strict); whole-test `xfail(strict=True)` only when the bug blocks the test's start |
+| `autotests/step.py` | `with step("<what the user does>"):` around each case step (or `@step("…")` on a page method) — `STEP <n>: …` in the test's log, the steps in the HTML report, the failed step in the failure's info |
 | `autotests/plugin.py` | the pytest plugin: options, settings, user, authenticate, data/texts/api fixtures, the rarer shared state collected first, logs per test, artifacts on failure and xfail (screenshot in the HTML report) |
 
 ## Run
@@ -55,3 +57,12 @@ make hooks                                    # once per clone: style gate befor
 A failed test leaves `build/reports/failures/<test>/` (screenshot, page.html, console, info) and
 `build/reports/traces/<test>/trace.zip` (`uv run playwright show-trace <it>`); the run's
 `build/reports/report.html` and `build/test-results/junit.xml`.
+
+## Qase
+
+A writable Qase reports through its pytest reporter: add `qase-pytest` to the dependencies, a test of
+a case carries `@qase.id(<id>)` (and the id in its name), reporting is off unless
+`QASE_MODE=testops` (+ `QASE_TESTOPS_PROJECT`, `QASE_TESTOPS_API_TOKEN` — tooling tokens, never in
+the repo). Tests without a case id are never reported: the plugin marks them `qase_ignore` (in
+testops mode a result without a case id makes Qase create a new case outside the suite) — so
+`tests/framework` and helper tests stay out of the TMS.
