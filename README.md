@@ -57,3 +57,12 @@ make hooks                                    # once per clone: style gate befor
 A failed test leaves `build/reports/failures/<test>/` (screenshot, page.html, console, info) and
 `build/reports/traces/<test>/trace.zip` (`uv run playwright show-trace <it>`); the run's
 `build/reports/report.html` and `build/test-results/junit.xml`.
+
+## Qase
+
+A writable Qase reports through its pytest reporter: add `qase-pytest` to the dependencies, a test of
+a case carries `@qase.id(<id>)` (and the id in its name), reporting is off unless
+`QASE_MODE=testops` (+ `QASE_TESTOPS_PROJECT`, `QASE_TESTOPS_API_TOKEN` — tooling tokens, never in
+the repo). Tests without a case id are never reported: the plugin marks them `qase_ignore` (in
+testops mode a result without a case id makes Qase create a new case outside the suite) — so
+`tests/framework` and helper tests stay out of the TMS.
