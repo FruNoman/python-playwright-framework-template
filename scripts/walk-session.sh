@@ -16,7 +16,7 @@
 #   curl -s -o /dev/null -c "$JAR" -b "$JAR" --data-urlencode "_token=$TOKEN" \
 #     --data-urlencode "email=$(field username)" --data-urlencode "password=$(field password)" \
 #     "$BASE/auth/login"
-#   curl -s -o /dev/null -c "$JAR" -b "$JAR" "$BASE/home"
+# Then write the page the login lands on into PROTECTED below — the check after the login uses it.
 # A token in localStorage instead of a cookie: print "<key>=<token>" and say so in the site map.
 set -euo pipefail
 USER_KEY=${1:?usage: walk-session.sh <user-key> [env]}
@@ -29,13 +29,19 @@ m=re.search(r"^\s*"+sys.argv[2]+r":\s*(\S+)",t,re.M)
 print(m.group(1) if m else "")' "$ENV_FILE" "$1"; }
 field() { python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))[sys.argv[2]][sys.argv[3]])' "$DATA" "$USER_KEY" "$1"; }
 BASE=$(yml url); BASE=${BASE%/}
-# ONBOARD: the session cookie's name — here, not in the env file: Settings refuses unknown keys
-# there (extra="forbid"), so an `auth:` block would fail every run
-COOKIE=SESSION
+# ONBOARD: the session cookie's name (auth.session-cookie of the env file when set)
+COOKIE=$(yml session-cookie); COOKIE=${COOKIE:-SESSION}
 JAR=$(mktemp); trap 'rm -f "$JAR"' EXIT
 
 echo "walk-session.sh: the app's login isn't written yet (ONBOARD)" >&2
 exit 1
+
+# The login worked only if a page for logged-in users answers 200, not a redirect to the login:
+# some frameworks set a session cookie on every answer, logged in or not, so the cookie alone
+# proves nothing. ONBOARD: a page only a logged-in user gets (relative to base.url).
+PROTECTED=home
+CODE=$(curl -s -o /dev/null -w '%{http_code}' -c "$JAR" -b "$JAR" "$BASE/$PROTECTED")
+[ "$CODE" = 200 ] || { echo "login of $USER_KEY failed: /$PROTECTED -> $CODE" >&2; exit 1; }
 
 VALUE=$(awk -v c="$COOKIE" '$6==c{print $7}' "$JAR")
 [ -n "$VALUE" ] || { echo "no $COOKIE cookie after the login" >&2; exit 1; }

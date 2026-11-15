@@ -6,6 +6,9 @@
 base:
   # root URL, trailing slash — every page's path is appended to it
   url: https://www.selenium.dev/selenium/web/
+# The app's session (ONBOARD, with the login — login-strategies): the cookie the login sets.
+# auth:
+#   session-cookie: <name>
 # Per-environment browser mode, when this environment needs other than the default:
 # browser:
 #   headless: false

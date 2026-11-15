@@ -16,7 +16,7 @@ from pydantic import SecretStr
 from pytest_check import check
 
 from autotests.api.client import ApiClient
-from autotests.config.settings import ROOT, load_settings
+from autotests.config.settings import ROOT, Settings, load_settings
 from autotests.data.loader import TestDataLoader
 from autotests.data.models import TestData
 from autotests.data.placeholders import process
@@ -217,3 +217,12 @@ def test_shared_state_joins_its_state_and_switches_once_the_other_is_done(
     with check:
         assert resource["on"] is False, "switched once"
         assert events.count("other switches") == 1, "switched once"
+
+
+def test_an_env_file_may_name_the_session_cookie() -> None:
+    settings = Settings.model_validate(
+        {"base": {"url": "https://app.example/"}, "auth": {"session-cookie": "sid"}}
+    )
+
+    assert settings.auth is not None, "the auth section is a known key"
+    assert settings.auth.session_cookie == "sid", "auth.session-cookie, as walk-session.sh reads it"
